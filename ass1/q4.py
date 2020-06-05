@@ -1,35 +1,39 @@
 #!/usr/bin/python3
+import random
+
 def main():
 	# TESTING
+
 	grid = [[1,2,3,4,5,6,7,8] for i in range(8)]
-	print(q4(grid))
+	print("MAX TREES =", q4(grid))
 
-
+	for row in grid:
+		random.shuffle(row)
+	print("MAX TREES =", q4(grid))
 
 def q4(grid, squareSize=None):
-	# process the grid first where sums[i][j] = sum of all trees from square between grid[0][0] and grid[i][j]
+	# process the entire grid first where sums[i][j] = sum of all trees from square between grid[0][0] and grid[i][j]
 	# this is done in (4n)^2 time
 	size = len(grid)
 	sums = [[0 for i in range(size)] for j in range(size)]
-	sums[0][0] = grid[0][0]
 
 	for i in range(size):
 		for j in range(size):
-			if i == 0 and j == 0:
-				continue
+			sums[i][j] = grid[i][j]
 
-			if i == 0: # first row
-				sums[i][j] = sums[i][j - 1] + grid[i][j]
-				continue
+			if i > 0: # not first row, we add the upper rectangle
+				sums[i][j] += sums[i - 1][j]
 
-			if j == 0:
-				sums[i][j] = sums[i - 1][j] + grid[i][j]
-				continue
+			if j > 0: # not first col, we add left rectangle
+				sums[i][j] += sums[i][j - 1]
 
-			# otherwise we are in the middle
-			sums[i][j] = sums[i - 1][j] + sums[i][j - 1] - sums[i - 1][j - 1] + grid[i][j]
 
-	# Using sums[][] arr, we can loop through grid again in (4n)^2 time and calculate the sum of each square in constant time
+			# minus the middle overlap if there is one
+			if i > 0 and j > 0:
+				sums[i][j] -= sums[i - 1][j - 1]
+
+	# Using sums[][] arr, we can loop through grid again in (4n)^2 time 
+	# we can calculate the sum of each n//4 sized square in constant time
 	# total runtime is n^2
 	if not squareSize: 
 		squareSize = size//4
@@ -48,13 +52,14 @@ def q4(grid, squareSize=None):
 			if j - squareSize >= 0:
 				total -= sums[i][j - squareSize]
 
-			# we double minus the top corner square off so we need to add it back on
+			# if we double minus the top corner square off, we need to add it back on
 			if i - squareSize >= 0 and j - squareSize >= 0:
 				total += sums[i - squareSize][j - squareSize]
 
 			res[i][j] = total
 			maxTrees = max(maxTrees, total)
 
+	print('-------------')
 	print("grid")
 	for row in grid:
 		for col in row:
