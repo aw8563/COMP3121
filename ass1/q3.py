@@ -3,7 +3,8 @@ import random
 
 def main():
 	# TESTING
-	print(q3().weight)
+
+	print(q3().weight) #  should be
 
 
 def q3():
@@ -23,7 +24,7 @@ def q3():
 		def weigh(self, apple1, apple2):
 			self.nUsed += 1
 			return (apple1, apple2) if apple1.weight > apple2.weight else (apple2, apple1)
-		
+
 	scale = Scale()
 	apples = [Apple(i + 1) for i in range(1024)]
 	random.shuffle(apples)
