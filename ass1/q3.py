@@ -4,7 +4,7 @@ import random
 def main():
 	# TESTING
 
-	print(q3().weight) #  should be
+	print(q3().weight) #  should be 1023
 
 
 def q3():
